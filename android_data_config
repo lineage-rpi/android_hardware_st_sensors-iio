@@ -1,0 +1,9 @@
+export PLATFORM_VERSION=11
+export DEFCONFIG=android_R_defconfig
+export ST_HAL_ANDROID_VERSION=7
+export ST_HAL_HAS_FDFD_LIB=n
+export ST_HAL_HAS_GBIAS_LIB=n
+export ST_HAL_HAS_GEOMAG_LIB=n
+export ST_HAL_HAS_9X_6X_LIB=n
+export ST_HAL_HAS_MAGN_CALIB_LIB=n
+export ST_HAL_HAS_ACCEL_CALIB_LIB=n
