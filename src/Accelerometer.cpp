@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <signal.h>
+#include <cutils/properties.h>
 
 #include "Accelerometer.h"
 
@@ -98,12 +99,16 @@ void Accelerometer::ProcessData(SensorBaseData *data)
 	STAccCalibration_Input acc_cal_input;
 	STAccCalibration_Output acc_cal_output;
 #endif /* CONFIG_ST_HAL_ACCEL_CALIB_ENABLED */
+	char rot_matrix[PROPERTY_VALUE_MAX];
+	int m[9];
 
 	memcpy(tmp_raw_data, data->raw, SENSOR_DATA_3AXIS * sizeof(float));
 
-	data->raw[0] = SENSOR_X_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], CONFIG_ST_HAL_ACCEL_ROT_MATRIX);
-	data->raw[1] = SENSOR_Y_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], CONFIG_ST_HAL_ACCEL_ROT_MATRIX);
-	data->raw[2] = SENSOR_Z_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], CONFIG_ST_HAL_ACCEL_ROT_MATRIX);
+	property_get("ro.stmicro.accel.rot_matrix", rot_matrix, TOSTRING(CONFIG_ST_HAL_ACCEL_ROT_MATRIX));
+	sscanf(rot_matrix, "%d,%d,%d,%d,%d,%d,%d,%d,%d", &m[0], &m[1], &m[2], &m[3], &m[4], &m[5], &m[6], &m[7], &m[8]);
+	data->raw[0] = SENSOR_X_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+	data->raw[1] = SENSOR_Y_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+	data->raw[2] = SENSOR_Z_DATA(tmp_raw_data[0], tmp_raw_data[1], tmp_raw_data[2], m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
 
 #if (CONFIG_ST_HAL_DEBUG_LEVEL >= ST_HAL_DEBUG_EXTRA_VERBOSE)
 	ALOGD("\"%s\": received new sensor data: x=%f y=%f z=%f, timestamp=%" PRIu64 "ns, deltatime=%" PRIu64 "ns (sensor type: %d).",
