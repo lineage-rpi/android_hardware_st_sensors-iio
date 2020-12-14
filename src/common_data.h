@@ -85,4 +85,7 @@
 #define ST_HAL_DEBUG_VERBOSE				(2)
 #define ST_HAL_DEBUG_EXTRA_VERBOSE			(3)
 
+#define STRINGIFY(x...) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 #endif /* ANDROID_SENSOR_HAL_COMMON_DATA */
